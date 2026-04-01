@@ -1,0 +1,5 @@
+{
+  "name": "CaciousBibleQuiz",
+  "description": "An interactive and customizable Bible quiz application covering Genesis to Revelation, featuring dynamic question generation and progress tracking.",
+  "requestFramePermissions": []
+}

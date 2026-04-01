@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user profile information.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Unique user ID." },
+        "displayName": { "type": "string", "description": "User's display name." },
+        "photoURL": { "type": "string", "description": "URL to user's profile picture." },
+        "email": { "type": "string", "description": "User's email address." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp." }
+      },
+      "required": ["uid", "displayName", "email"]
+    },
+    "QuizScore": {
+      "title": "Quiz Score",
+      "description": "Stores a single quiz result.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "User ID of the participant." },
+        "displayName": { "type": "string", "description": "Display name of the participant." },
+        "photoURL": { "type": "string", "description": "Profile picture of the participant." },
+        "score": { "type": "integer", "description": "Number of correct answers." },
+        "totalQuestions": { "type": "integer", "description": "Total number of questions in the quiz." },
+        "category": { "type": "string", "description": "The category of the quiz (e.g., 'All', 'Pentateuch')." },
+        "timestamp": { "type": "string", "format": "date-time", "description": "When the quiz was completed." }
+      },
+      "required": ["uid", "displayName", "score", "totalQuestions", "timestamp"]
+    },
+    "Achievement": {
+      "title": "Achievement",
+      "description": "Stores an achievement earned by a user.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "User ID who earned the achievement." },
+        "type": { "type": "string", "description": "Type of achievement (e.g., 'PERFECT_SCORE', 'STREAK_7')." },
+        "title": { "type": "string", "description": "Display title of the achievement." },
+        "description": { "type": "string", "description": "Display description of the achievement." },
+        "icon": { "type": "string", "description": "Icon identifier for the achievement." },
+        "timestamp": { "type": "string", "format": "date-time", "description": "When the achievement was earned." }
+      },
+      "required": ["uid", "type", "title", "timestamp"]
+    },
+    "UserStats": {
+      "title": "User Stats",
+      "description": "Stores aggregated statistics for a user.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "User ID." },
+        "streak": { "type": "integer", "description": "Current daily streak." },
+        "lastQuizDate": { "type": "string", "format": "date-time", "description": "Date of the last completed quiz." },
+        "totalQuizzes": { "type": "integer", "description": "Total number of quizzes completed." },
+        "totalScore": { "type": "integer", "description": "Total score accumulated." }
+      },
+      "required": ["uid", "streak", "lastQuizDate"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of user profiles."
+    },
+    "/scores/{scoreId}": {
+      "schema": "QuizScore",
+      "description": "Collection of all quiz scores for the leaderboard."
+    },
+    "/achievements/{achievementId}": {
+      "schema": "Achievement",
+      "description": "Collection of earned achievements."
+    },
+    "/stats/{userId}": {
+      "schema": "UserStats",
+      "description": "Aggregated stats for each user."
+    }
+  }
+}
