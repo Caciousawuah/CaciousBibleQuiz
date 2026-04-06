@@ -9,6 +9,7 @@
         "displayName": { "type": "string", "description": "User's display name." },
         "photoURL": { "type": "string", "description": "URL to user's profile picture." },
         "email": { "type": "string", "description": "User's email address." },
+        "phone": { "type": "string", "description": "User's phone number for notifications." },
         "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp." }
       },
       "required": ["uid", "displayName", "email"]

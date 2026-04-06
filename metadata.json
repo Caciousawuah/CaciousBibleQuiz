@@ -1,5 +1,9 @@
 {
   "name": "CaciousBibleQuiz",
-  "description": "An interactive and customizable Bible quiz application covering Genesis to Revelation, featuring dynamic question generation and progress tracking.",
-  "requestFramePermissions": []
+  "description": "A comprehensive AI-powered Bible quiz app covering all 66 books with chapter-specific study modes and multiplayer challenges.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
 }

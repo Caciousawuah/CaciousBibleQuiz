@@ -188,5 +188,231 @@ export const FALLBACK_QUESTIONS: Record<string, Question[]> = {
       answer: 'Refuge and strength',
       explanation: 'Psalm 46:1 states that God is our refuge and strength.'
     }
+  ],
+  'John': [
+    {
+      id: 'joh-fb-1',
+      verse: 'John 1:1',
+      text: 'In the beginning was the Word, and the Word was with God, and the Word was God.',
+      question: 'Who was with God in the beginning?',
+      options: ['The Word', 'The angels', 'The world', 'The prophets'],
+      answer: 'The Word',
+      explanation: 'John 1:1 identifies the Word as being with God in the beginning.'
+    },
+    {
+      id: 'joh-fb-2',
+      verse: 'John 3:16',
+      text: 'For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.',
+      question: 'What did God give because he loved the world?',
+      options: ['His only Son', 'The Ten Commandments', 'The Promised Land', 'The Holy Spirit'],
+      answer: 'His only Son',
+      explanation: 'John 3:16 is one of the most famous verses, stating God gave his only Son.'
+    },
+    {
+      id: 'joh-fb-3',
+      verse: 'John 11:35',
+      text: 'Jesus wept.',
+      question: 'What is the shortest verse in the Bible?',
+      options: ['Jesus wept', 'God is love', 'Pray without ceasing', 'Rejoice always'],
+      answer: 'Jesus wept',
+      explanation: 'John 11:35 is the shortest verse in the English Bible.'
+    }
+  ],
+  'Acts': [
+    {
+      id: 'act-fb-1',
+      verse: 'Acts 1:8',
+      text: 'But you will receive power when the Holy Spirit has come upon you, and you will be my witnesses in Jerusalem and in all Judea and Samaria, and to the end of the earth.',
+      question: 'When would the disciples receive power?',
+      options: ['When the Holy Spirit comes', 'When Jesus returns', 'When they reach Rome', 'When they fast'],
+      answer: 'When the Holy Spirit comes',
+      explanation: 'Acts 1:8 promises power through the Holy Spirit for witnessing.'
+    },
+    {
+      id: 'act-fb-2',
+      verse: 'Acts 9:3',
+      text: 'Now as he went on his way, he approached Damascus, and suddenly a light from heaven shone around him.',
+      question: 'Where was Saul going when the light from heaven shone around him?',
+      options: ['Damascus', 'Jerusalem', 'Antioch', 'Rome'],
+      answer: 'Damascus',
+      explanation: 'Saul was on the road to Damascus when he encountered the risen Christ.'
+    }
+  ],
+  'Romans': [
+    {
+      id: 'rom-fb-1',
+      verse: 'Romans 3:23',
+      text: 'for all have sinned and fall short of the glory of God,',
+      question: 'According to Romans 3:23, who has sinned?',
+      options: ['All', 'Only the wicked', 'Only the Gentiles', 'No one'],
+      answer: 'All',
+      explanation: 'The verse states that all have sinned and fall short of God\'s glory.'
+    },
+    {
+      id: 'rom-fb-2',
+      verse: 'Romans 8:28',
+      text: 'And we know that for those who love God all things work together for good, for those who are called according to his purpose.',
+      question: 'For whom do all things work together for good?',
+      options: ['Those who love God', 'Everyone', 'Only the perfect', 'The wealthy'],
+      answer: 'Those who love God',
+      explanation: 'Romans 8:28 promises that all things work together for good for those who love God.'
+    }
+  ],
+  'Proverbs': [
+    {
+      id: 'pro-fb-1',
+      verse: 'Proverbs 1:7',
+      text: 'The fear of the LORD is the beginning of knowledge; fools despise wisdom and instruction.',
+      question: 'What is the beginning of knowledge?',
+      options: ['The fear of the LORD', 'Reading many books', 'Wealth', 'Age'],
+      answer: 'The fear of the LORD',
+      explanation: 'Proverbs 1:7 states that the fear of the LORD is the beginning of knowledge.'
+    }
+  ],
+  'Revelation': [
+    {
+      id: 'rev-fb-1',
+      verse: 'Revelation 1:8',
+      text: '"I am the Alpha and the Omega," says the Lord God, "who is and who was and who is to come, the Almighty."',
+      question: 'What does the Lord call Himself in Revelation 1:8?',
+      options: ['The Alpha and the Omega', 'The First and the Last', 'The King of Kings', 'The Morning Star'],
+      answer: 'The Alpha and the Omega',
+      explanation: 'God identifies Himself as the Alpha and the Omega, the beginning and the end.'
+    }
+  ],
+  '1 Samuel': [
+    {
+      id: '1sam-fb-1',
+      verse: '1 Samuel 3:10',
+      text: 'And the LORD came and stood, calling as at other times, "Samuel! Samuel!" And Samuel said, "Speak, for your servant hears."',
+      question: 'What was Samuel\'s response when the LORD called him?',
+      options: ['Speak, for your servant hears', 'Here I am', 'Who is there?', 'I am listening'],
+      answer: 'Speak, for your servant hears',
+      explanation: 'Samuel responded as Eli instructed him, showing his readiness to hear from God.'
+    },
+    {
+      id: '1sam-fb-2',
+      verse: '1 Samuel 16:7',
+      text: 'But the LORD said to Samuel, "Do not look on his appearance or on the height of his stature, because I have rejected him. For the LORD sees not as man sees: man looks on the outward appearance, but the LORD looks on the heart."',
+      question: 'Where does the LORD look, according to 1 Samuel 16:7?',
+      options: ['On the heart', 'On the outward appearance', 'On the height of stature', 'On the strength of the arm'],
+      answer: 'On the heart',
+      explanation: 'God told Samuel that while man looks at the outside, God looks at the heart.'
+    },
+    {
+      id: '1sam-fb-3',
+      verse: '1 Samuel 17:49',
+      text: 'And David put his hand in his bag and took out a stone and slung it and struck the Philistine on his forehead. The stone sank into his forehead, and he fell on his face to the ground.',
+      question: 'What did David use to strike down Goliath?',
+      options: ['A stone and a sling', 'A sword', 'A spear', 'A bow and arrow'],
+      answer: 'A stone and a sling',
+      explanation: 'David defeated the giant Goliath with a single stone from his sling.'
+    }
+  ],
+  '2 Samuel': [
+    {
+      id: '2sam-fb-1',
+      verse: '2 Samuel 7:12',
+      text: 'When your days are fulfilled and you lie down with your fathers, I will raise up your offspring after you, who shall come from your body, and I will establish his kingdom.',
+      question: 'To whom did God make this promise about an eternal kingdom?',
+      options: ['David', 'Saul', 'Solomon', 'Absalom'],
+      answer: 'David',
+      explanation: 'This is part of the Davidic Covenant, where God promises David an enduring dynasty.'
+    }
+  ],
+  'Luke': [
+    {
+      id: 'luk-fb-1',
+      verse: 'Luke 2:7',
+      text: 'And she gave birth to her firstborn son and wrapped him in swaddling cloths and laid him in a manger, because there was no place for them in the inn.',
+      question: 'Where was Jesus laid after he was born?',
+      options: ['In a manger', 'In a bed', 'On the floor', 'In a cradle'],
+      answer: 'In a manger',
+      explanation: 'Because there was no room in the inn, Mary laid Jesus in a manger.'
+    },
+    {
+      id: 'luk-fb-2',
+      verse: 'Luke 10:33',
+      text: 'But a Samaritan, as he journeyed, came to where he was, and when he saw him, he had compassion.',
+      question: 'In the parable of the Good Samaritan, who stopped to help the injured man?',
+      options: ['A Samaritan', 'A Priest', 'A Levite', 'A Pharisee'],
+      answer: 'A Samaritan',
+      explanation: 'The Samaritan was the one who showed mercy and compassion to the man who had been robbed.'
+    }
+  ],
+  'Mark': [
+    {
+      id: 'mrk-fb-1',
+      verse: 'Mark 1:17',
+      text: 'And Jesus said to them, "Follow me, and I will make you become fishers of men."',
+      question: 'What did Jesus say he would make his followers?',
+      options: ['Fishers of men', 'Shepherds of sheep', 'Builders of houses', 'Teachers of law'],
+      answer: 'Fishers of men',
+      explanation: 'Jesus called Simon and Andrew to follow him and become fishers of men.'
+    }
+  ],
+  'Leviticus': [
+    {
+      id: 'lev-fb-1',
+      verse: 'Leviticus 19:18',
+      text: 'You shall not take vengeance or bear a grudge against the sons of your own people, but you shall love your neighbor as yourself: I am the LORD.',
+      question: 'What command does God give regarding one\'s neighbor in Leviticus 19:18?',
+      options: ['Love your neighbor as yourself', 'Avoid your neighbor', 'Judge your neighbor', 'Ignore your neighbor'],
+      answer: 'Love your neighbor as yourself',
+      explanation: 'Leviticus 19:18 is the source of the famous command to love your neighbor as yourself.'
+    }
+  ],
+  'Numbers': [
+    {
+      id: 'num-fb-1',
+      verse: 'Numbers 6:24-26',
+      text: 'The LORD bless you and keep you; the LORD make his face to shine upon you and be gracious to you; the LORD lift up his countenance upon you and give you peace.',
+      question: 'What is this famous blessing often called?',
+      options: ['The Priestly Blessing', 'The Shepherd\'s Prayer', 'The Song of Moses', 'The Covenant Promise'],
+      answer: 'The Priestly Blessing',
+      explanation: 'This is the Aaronic or Priestly Blessing that God commanded the priests to speak over the people.'
+    },
+    {
+      id: 'num-fb-2',
+      verse: 'Numbers 21:9',
+      text: 'So Moses made a bronze serpent and set it on a pole. And if a serpent bit anyone, he would look at the bronze serpent and live.',
+      question: 'What did Moses make to save the people from the fiery serpents?',
+      options: ['A bronze serpent', 'A golden calf', 'A wooden cross', 'A stone altar'],
+      answer: 'A bronze serpent',
+      explanation: 'God instructed Moses to make a bronze serpent and put it on a pole for healing.'
+    }
+  ],
+  'Deuteronomy': [
+    {
+      id: 'deu-fb-1',
+      verse: 'Deuteronomy 6:5',
+      text: 'You shall love the LORD your God with all your heart and with all your soul and with all your might.',
+      question: 'What is the greatest commandment according to Deuteronomy 6:5?',
+      options: ['Love the LORD with all your heart', 'Keep the Sabbath', 'Honor your parents', 'Do not steal'],
+      answer: 'Love the LORD with all your heart',
+      explanation: 'This verse, part of the Shema, commands total devotion to God.'
+    }
+  ],
+  'Acts': [
+    {
+      id: 'act-fb-1',
+      verse: 'Acts 1:8',
+      text: 'But you will receive power when the Holy Spirit has come upon you, and you will be my witnesses in Jerusalem and in all Judea and Samaria, and to the end of the earth.',
+      question: 'What will the disciples receive when the Holy Spirit comes upon them?',
+      options: ['Power', 'Wealth', 'Fame', 'Safety'],
+      answer: 'Power',
+      explanation: 'Jesus promised his disciples power through the Holy Spirit to be his witnesses.'
+    }
+  ],
+  'Psalms': [
+    {
+      id: 'psa-fb-1',
+      verse: 'Psalm 23:1',
+      text: 'The LORD is my shepherd; I shall not want.',
+      question: 'Who is the shepherd according to Psalm 23:1?',
+      options: ['The LORD', 'David', 'Moses', 'Abraham'],
+      answer: 'The LORD',
+      explanation: 'David begins this famous Psalm by identifying the Lord as his shepherd.'
+    }
   ]
 };

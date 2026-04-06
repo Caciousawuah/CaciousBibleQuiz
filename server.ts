@@ -41,6 +41,10 @@ async function startServer() {
       io.to(roomId).emit('room_update', room);
     });
 
+    socket.on('signal', ({ to, signal, from }) => {
+      io.to(to).emit('signal', { signal, from: from || socket.id });
+    });
+
     socket.on('player_ready', ({ roomId }) => {
       const room = rooms.get(roomId);
       if (!room) return;

@@ -13,38 +13,75 @@ export interface Question {
 
 export async function generateQuestions(book: string, chapter: number, difficulty: string = 'Medium', count: number = 5, seed?: number): Promise<Question[]> {
   const apiKey = process.env.GEMINI_API_KEY || "";
+  const cleanBook = book.trim();
+  
   if (!apiKey) {
     console.error("GEMINI_API_KEY is missing!");
-    return FALLBACK_QUESTIONS[book] || FALLBACK_QUESTIONS['Genesis'];
+    return getFallback(cleanBook);
   }
   const ai = new GoogleGenAI({ apiKey });
 
-  const getPrompt = (b: string, c: number) => `Generate ${count} multiple-choice Bible quiz questions based on ${b === 'Daily' ? 'randomly selected books and chapters' : `${b} ${c > 0 ? `chapter ${c}` : 'randomly selected chapters'}`} (ESV). 
-  Difficulty Level: ${difficulty}.
-  - Easy: Basic facts and well-known stories.
-  - Medium: More detailed questions about specific events or people.
-  - Hard: Deep theological questions, specific phrasing, or lesser-known details.
-  
-  For each question, provide:
-  1. The verse reference (e.g., Genesis 1:1)
-  2. The text of the verse
-  3. The quiz question
-  4. 4 multiple-choice options
-  5. The correct answer (must be EXACTLY one of the options)
-  6. A brief explanation of why the answer is correct and its biblical context.
-  
-  Ensure the questions are challenging but fair for the ${difficulty} level.
-  Output MUST be a valid JSON array of objects.`;
+  function getFallback(b: string): Question[] {
+    console.log("Attempting fallback for:", b);
+    // Case-insensitive lookup
+    const bookKey = Object.keys(FALLBACK_QUESTIONS).find(
+      key => key.toLowerCase() === b.toLowerCase()
+    );
+    
+    if (bookKey && FALLBACK_QUESTIONS[bookKey]) {
+      console.log("Found specific fallback for:", bookKey);
+      return FALLBACK_QUESTIONS[bookKey].map((q, index) => ({
+        ...q,
+        id: `${b}-fallback-${index}-${Date.now()}`
+      }));
+    }
+    
+    console.log("No specific fallback found for:", b, ". Defaulting to Genesis.");
+    return FALLBACK_QUESTIONS['Genesis'].map((q, index) => ({
+      ...q,
+      id: `genesis-fallback-${index}-${Date.now()}`
+    }));
+  }
 
-  const attemptGeneration = async (p: string, retries = 1) => {
+  // Improved prompt to be more specific and demanding about the book/chapter
+  const getPrompt = (b: string, c: number) => {
+    const target = b === 'Daily' 
+      ? 'randomly selected books and chapters' 
+      : `the book of ${b}${c > 0 ? `, specifically chapter ${c}` : ''}`;
+    
+    return `Generate exactly ${count} multiple-choice Bible quiz questions based on ${target} using the ESV translation.
+    
+    CRITICAL RULES:
+    1. You MUST ONLY use verses from ${b === 'Daily' ? 'various books' : b}. 
+    2. If the requested book is ${b}, do NOT provide questions from Genesis or any other book.
+    3. Each question must be unique and directly related to the text of ${b}.
+    4. Ensure the JSON is perfectly formatted.
+    
+    Difficulty Level: ${difficulty}.
+    - Easy: Basic facts and well-known stories.
+    - Medium: More detailed questions about specific events or people.
+    - Hard: Deep theological questions, specific phrasing, or lesser-known details.
+    
+    For each question, provide:
+    1. The exact verse reference (e.g., ${b} ${c > 0 ? c : '1'}:1)
+    2. The full text of the verse
+    3. A clear quiz question based on that verse
+    4. 4 distinct multiple-choice options
+    5. The correct answer (must match one of the options exactly)
+    6. A brief explanation of the answer and its context.
+    
+    Output MUST be a valid JSON array of objects.`;
+  };
+
+  const attemptGeneration = async (p: string, retries = 2) => {
+    const models = ["gemini-3.1-flash-lite-preview", "gemini-3-flash-preview"];
+    
     for (let i = 0; i <= retries; i++) {
+      const modelToUse = models[i % models.length];
       try {
-        // Use a controller to timeout the request if it takes too long
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
-
+        console.log(`Attempting generation with ${modelToUse} for ${cleanBook}...`);
         const response = await ai.models.generateContent({
-          model: "gemini-3-flash-preview", // Faster model
+          model: modelToUse,
           contents: p,
           config: {
             seed: seed,
@@ -70,45 +107,54 @@ export async function generateQuestions(book: string, chapter: number, difficult
           }
         });
         
-        clearTimeout(timeoutId);
-
         if (response && response.text) {
-          return response.text;
+          const questions = JSON.parse(response.text);
+          if (Array.isArray(questions) && questions.length > 0) {
+            // Validation: check if the first question's verse contains the book name (or part of it)
+            const firstVerse = questions[0].verse.toLowerCase();
+            const bookLower = cleanBook.toLowerCase();
+            
+            // Allow some flexibility (e.g. "1 Samuel" vs "1 Sam")
+            const bookWords = bookLower.split(' ');
+            const matchesBook = cleanBook === 'Daily' || bookWords.some(word => word.length > 2 && firstVerse.includes(word));
+
+            if (!matchesBook && i < retries) {
+              console.warn(`AI generated questions for wrong book. Expected ${cleanBook}, got ${firstVerse}. Retrying...`);
+              continue;
+            }
+            return response.text;
+          }
         }
       } catch (err) {
-        console.error(`Attempt ${i + 1} failed:`, err);
+        console.error(`Attempt ${i + 1} with ${modelToUse} failed for ${cleanBook}:`, err);
         if (i === retries) return null;
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
     }
     return null;
   };
 
   try {
-    // Try AI generation first
-    let text = await attemptGeneration(getPrompt(book, chapter));
+    let text = await attemptGeneration(getPrompt(cleanBook, chapter));
     
     if (!text) {
-      console.log("AI failed or timed out. Using fallback questions for", book);
-      return FALLBACK_QUESTIONS[book] || FALLBACK_QUESTIONS['Genesis'];
+      console.log("AI failed completely for", cleanBook);
+      return getFallback(cleanBook);
     }
 
     try {
       const questions = JSON.parse(text);
-      if (!Array.isArray(questions) || questions.length === 0) {
-        throw new Error("Invalid format from AI");
-      }
       return questions.map((q: any, index: number) => ({
         ...q,
-        id: `${book}-${chapter}-${index}-${Date.now()}`
+        id: `${cleanBook}-${chapter}-${index}-${Date.now()}`
       }));
     } catch (parseError) {
-      console.error("Error parsing AI response, using fallbacks:", parseError);
-      return FALLBACK_QUESTIONS[book] || FALLBACK_QUESTIONS['Genesis'];
+      console.error("Error parsing AI response:", parseError);
+      return getFallback(cleanBook);
     }
   } catch (error) {
-    console.error("Critical error in generateQuestions, using fallbacks:", error);
-    return FALLBACK_QUESTIONS[book] || FALLBACK_QUESTIONS['Genesis'];
+    console.error("Critical error in generateQuestions:", error);
+    return getFallback(cleanBook);
   }
 }
 
@@ -219,5 +265,50 @@ export async function generateLogo(prompt: string): Promise<string | null> {
   } catch (error) {
     console.error("Error generating logo:", error);
     return null;
+  }
+}
+
+export async function askBibleQuestion(question: string): Promise<string> {
+  const apiKey = process.env.GEMINI_API_KEY || "";
+  if (!apiKey) return "I'm sorry, I can't answer that right now. Please check your API key.";
+  
+  const ai = new GoogleGenAI({ apiKey });
+  
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: `You are a helpful and knowledgeable Bible Study Assistant for the 'CaciousBibleQuiz' app. 
+      Answer the following question about the Bible, theology, or Christian history in a clear, encouraging, and scholarly way.
+      Keep the answer concise but informative.
+      Question: ${question}`,
+    });
+    
+    return response.text || "I'm sorry, I couldn't find an answer to that.";
+  } catch (error) {
+    console.error("Error asking Bible question:", error);
+    return "An error occurred while trying to find an answer. Please try again.";
+  }
+}
+
+export async function generateAdminMessage(prompt: string): Promise<string> {
+  const apiKey = process.env.GEMINI_API_KEY || "";
+  if (!apiKey) return "API key missing. Please check your configuration.";
+  
+  const ai = new GoogleGenAI({ apiKey });
+  
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: `You are an expert community manager for a Bible Quiz app called 'CaciousBibleQuiz'. 
+      Generate a professional, encouraging, and engaging message for the app's users based on the following request: ${prompt}.
+      The message should be suitable for Email, WhatsApp, or SMS. 
+      Use emojis where appropriate to make it friendly. 
+      Keep it concise but impactful.`,
+    });
+    
+    return response.text || "I couldn't generate a message at this time.";
+  } catch (error) {
+    console.error("Error generating admin message:", error);
+    return "An error occurred while generating the message.";
   }
 }

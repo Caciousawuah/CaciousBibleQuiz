@@ -9,7 +9,7 @@
 //   - displayName: string (required, < 100 chars)
 //   - photoURL: string (optional, valid URL)
 //   - email: string (required, valid email)
-//   - createdAt: timestamp (optional)
+//   - updatedAt: timestamp (optional)
 //
 // Collection: scores
 // Document ID: {scoreId} (auto-generated)
@@ -21,6 +21,21 @@
 //   - totalQuestions: number (required, > 0)
 //   - category: string (required, < 50 chars)
 //   - timestamp: timestamp (required)
+//
+// Collection: achievements
+// Document ID: {achievementId} (auto-generated)
+// Fields:
+//   - uid: string (required, matches author)
+//   - type: string (required, < 100 chars)
+//   - title: string (required, < 100 chars)
+//   - timestamp: timestamp (required)
+//
+// Collection: stats
+// Document ID: {userId} (matches Firebase Auth UID)
+// Fields:
+//   - uid: string (required, matches author)
+//   - streak: number (required, >= 0)
+//   - lastQuizDate: timestamp (required)
 //
 // ===============================================================
 
@@ -42,8 +57,11 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated() &&
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-          (request.auth.token.email == "caciousawuah678@gmail.com" && request.auth.token.email_verified == true));
+        (
+          request.auth.token.email == "caciousawuah678@gmail.com" ||
+          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', '') == 'admin')
+        );
     }
 
     function isValidEmail(email) {
@@ -63,7 +81,9 @@ service cloud.firestore {
              data.uid == request.auth.uid &&
              data.displayName is string && data.displayName.size() < 100 &&
              isValidEmail(data.email) &&
-             (!('photoURL' in data) || isValidUrl(data.photoURL));
+             (!('photoURL' in data) || data.photoURL == null || isValidUrl(data.photoURL)) &&
+             (!('phone' in data) || (data.phone is string && data.phone.size() < 20)) &&
+             (!('updatedAt' in data) || data.updatedAt is timestamp);
     }
 
     function isValidScore(data) {
@@ -73,7 +93,7 @@ service cloud.firestore {
              data.score is int && data.score >= 0 &&
              data.totalQuestions is int && data.totalQuestions > 0 &&
              data.timestamp is timestamp &&
-             (!('photoURL' in data) || isValidUrl(data.photoURL)) &&
+             (!('photoURL' in data) || data.photoURL == null || isValidUrl(data.photoURL)) &&
              (!('category' in data) || (data.category is string && data.category.size() < 50));
     }
 
@@ -90,14 +110,14 @@ service cloud.firestore {
              data.uid == request.auth.uid &&
              data.streak is int && data.streak >= 0 &&
              data.lastQuizDate is timestamp;
-    }
+     }
 
     // ===============================================================
     // Rules
     // ===============================================================
 
     match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
+      allow read: if isAuthenticated();
       allow create: if isOwner(userId) && isValidUser(request.resource.data);
       allow update: if isOwner(userId) && isValidUser(request.resource.data) && 
                       request.resource.data.uid == resource.data.uid;
